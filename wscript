@@ -11,7 +11,7 @@
  *     MIT, see COPYING file
 """
 
-import Options
+import Options, sys
 
 # the following two variables are used by the target "waf dist"
 VERSION='0.3'
@@ -30,6 +30,14 @@ def set_options(opt):
 
 
 def configure(conf):
+	if sys.platform.startswith('freebsd'):
+		conf.env['CCFLAGS'] += [ '-I/usr/local/include' ];
+		conf.env['LINKFLAGS'] += [ '-L/usr/local/lib' ];
+
+	elif sys.platform.startswith('darwin'):
+		conf.env['CCFLAGS'] += [ '-I/opt/local/include' ];
+		conf.env['LINKFLAGS'] += [ '-L/opt/local/lib' ];
+
 	conf.env['CCFLAGS'] += [
 		'-std=gnu99', '-Wall', '-Wshadow', '-W', '-pedantic', '-g', '-g2', '-O2', '-Wmissing-declarations',
 		'-Wdeclaration-after-statement', '-Wno-pointer-sign', '-Wcast-align', '-Winline', '-Wsign-compare',
