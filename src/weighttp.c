@@ -227,7 +227,10 @@ int main(int argc, char *argv[]) {
 				return 0;
 			case 'v':
 				printf("version:    " VERSION "\n");
-				printf("build-date: " __DATE__ " " __TIME__ "\n\n");
+				printf("build-date: " __DATE__ " " __TIME__ "\n");
+				printf("libev:      system %d.%d, built with %d.%d\n\n",
+					ev_version_major(), ev_version_minor(),
+					EV_VERSION_MAJOR, EV_VERSION_MINOR);
 				return 0;
 			case '6':
 				use_ipv6 = 1;
@@ -312,7 +315,8 @@ int main(int argc, char *argv[]) {
 	else
 		method = "unknown";
 
-        printf("libev initialized (using %s method), ", method);
+	printf("libev v%d.%d initialized (using %s method), ",
+		ev_version_major(), ev_version_minor(), method);
 
 	if (NULL == (config.request = forge_request(argv[optind], config.keep_alive, &host, &port, headers, headers_num))) {
 		return 1;
