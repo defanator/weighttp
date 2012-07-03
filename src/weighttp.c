@@ -189,14 +189,14 @@ uint64_t str_to_uint64(char *str) {
 int main(int argc, char *argv[]) {
 	Worker **workers;
 	pthread_t *threads;
-	int i;
+	int i, b;
 	char c;
 	int err;
 	struct ev_loop *loop;
 	ev_tstamp ts_start, ts_end;
 	Config config;
 	Worker *worker;
-	char *host;
+	char *host, *method;
 	uint16_t port;
 	uint8_t use_ipv6;
 	uint16_t rest_concur, rest_req;
@@ -294,6 +294,25 @@ int main(int argc, char *argv[]) {
 		W_ERROR("%s", "could not initialize libev\n");
 		return 2;
 	}
+
+	b = ev_backend(loop);
+
+	if (b & EVBACKEND_SELECT)
+		method = "select";
+	else if (b & EVBACKEND_POLL)
+		method = "poll";
+	else if (b & EVBACKEND_EPOLL)
+		method = "epoll";
+	else if (b & EVBACKEND_KQUEUE)
+		method = "kqueue";
+	else if (b & EVBACKEND_DEVPOLL)
+		method = "devpoll";
+	else if (b & EVBACKEND_PORT)
+		method = "eventport";
+	else
+		method = "unknown";
+
+        printf("libev initialized (using %s method), ", method);
 
 	if (NULL == (config.request = forge_request(argv[optind], config.keep_alive, &host, &port, headers, headers_num))) {
 		return 1;
