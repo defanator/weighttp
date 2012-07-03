@@ -406,6 +406,14 @@ static uint8_t client_parse(Client *client, int size) {
 
 
 				if (*(end+2) == '\r' && *(end+3) == '\n') {
+
+					/* 204 - No Content */
+					if (status_code == 204) {
+						client->state = CLIENT_END;
+						client->success = client->status_success;
+						return 1;
+					}
+
 					/* body reached */
 					client->parser_state = PARSER_BODY;
 					client->header_size = end + 4 - client->buffer;
@@ -504,13 +512,6 @@ static uint8_t client_parse(Client *client, int size) {
 
 				return 1;
 			} else {
-				/* 204 - No Content */
-				if (status_code == 204) {
-					client->state = CLIENT_END;
-					client->success = client->status_success;
-					return 1;
-				}
-
 				/* not chunked, just consume all data till content-length is reached */
 				client->buffer_offset = 0;
 
