@@ -14,6 +14,7 @@ extern int optind, optopt; /* getopt */
 
 static void show_help(void) {
 	printf("weighttp <options> <url>\n");
+	printf("  -e str   libev event backend   (default: auto)\n");
 	printf("  -n num   number of requests    (mandatory)\n");
 	printf("  -t num   threadcount           (default: 1)\n");
 	printf("  -c num   concurrent clients    (default: 1)\n");
@@ -189,7 +190,7 @@ uint64_t str_to_uint64(char *str) {
 int main(int argc, char *argv[]) {
 	Worker **workers;
 	pthread_t *threads;
-	int i, b;
+	int i, b, flags = 0;
 	char c;
 	int err;
 	struct ev_loop *loop;
@@ -219,8 +220,9 @@ int main(int argc, char *argv[]) {
 	config.concur_count = 1;
 	config.req_count = 0;
 	config.keep_alive = 0;
+	config.libev_backend = 0;
 
-	while ((c = getopt(argc, argv, ":hv6kn:t:c:H:")) != -1) {
+	while ((c = getopt(argc, argv, ":hv6kn:t:c:H:e:")) != -1) {
 		switch (c) {
 			case 'h':
 				show_help();
@@ -256,6 +258,23 @@ int main(int argc, char *argv[]) {
 				W_ERROR("unkown option: -%c", optopt);
 				show_help();
 				return 1;
+			case 'e':
+				if (strcmp("select", optarg) == 0)
+					config.libev_backend = EVBACKEND_SELECT;
+				else if (strcmp("poll", optarg) == 0)
+					config.libev_backend = EVBACKEND_POLL;
+				else if (strcmp("epoll", optarg) == 0)
+					config.libev_backend = EVBACKEND_EPOLL;
+				else if (strcmp("kqueue", optarg) == 0)
+					config.libev_backend = EVBACKEND_KQUEUE;
+				else if (strcmp("devpoll", optarg) == 0)
+					config.libev_backend = EVBACKEND_DEVPOLL;
+				else if (strcmp("eventport", optarg) == 0)
+					config.libev_backend = EVBACKEND_PORT;
+				else {
+					printf("invalid libev backend: %s\nvalid values: select, poll, epoll, kqueue, devpoll, eventport\n\n", optarg);
+					exit(1);
+				}
 		}
 	}
 
@@ -291,10 +310,12 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
+	if (config.libev_backend)
+		flags = config.libev_backend | EVFLAG_NOENV;
 
-	loop = ev_default_loop(0);
+	loop = ev_default_loop(flags);
 	if (!loop) {
-		W_ERROR("%s", "could not initialize libev\n");
+		W_ERROR("could not initialize libev (flags=0x%08X)\n", flags);
 		return 2;
 	}
 

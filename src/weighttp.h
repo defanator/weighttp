@@ -53,6 +53,8 @@ struct Config {
 	uint16_t concur_count;
 	uint8_t keep_alive;
 
+	int libev_backend;
+
 	char *request;
 	uint32_t request_size;
 	struct addrinfo *saddr;
