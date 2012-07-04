@@ -289,11 +289,11 @@ void client_state_machine(Client *client) {
 			}
 
 			/* print progress every 10% done */
-			if (client->worker->id == 1 && client->worker->stats.req_done % client->worker->progress_interval == 0) {
+	/*		if (client->worker->id == 1 && client->worker->stats.req_done % client->worker->progress_interval == 0) {
 				printf("progress: %3d%% done\n",
 					(int) (client->worker->stats.req_done * 100 / client->worker->stats.req_todo)
 				);
-			}
+			} */
 
 			if (client->worker->stats.req_started == client->worker->stats.req_todo) {
 				/* this worker has started all requests */
