@@ -16,7 +16,7 @@ Worker *worker_new(uint8_t id, Config *config, uint16_t num_clients, uint64_t nu
 
 	worker = W_MALLOC(Worker, 1);
 	worker->id = id;
-	worker->loop = ev_loop_new(0);
+	worker->loop = ev_loop_new(config->libev_flags);
 	ev_ref(worker->loop);
 	worker->config = config;
 	worker->num_clients = num_clients;

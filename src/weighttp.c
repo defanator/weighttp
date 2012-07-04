@@ -190,7 +190,7 @@ uint64_t str_to_uint64(char *str) {
 int main(int argc, char *argv[]) {
 	Worker **workers;
 	pthread_t *threads;
-	int i, b, flags = 0;
+	int i, b;
 	char c;
 	int err;
 	struct ev_loop *loop;
@@ -221,6 +221,7 @@ int main(int argc, char *argv[]) {
 	config.req_count = 0;
 	config.keep_alive = 0;
 	config.libev_backend = 0;
+	config.libev_flags = 0;
 
 	while ((c = getopt(argc, argv, ":hv6kn:t:c:H:e:")) != -1) {
 		switch (c) {
@@ -311,11 +312,12 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (config.libev_backend)
-		flags = config.libev_backend | EVFLAG_NOENV;
+		config.libev_flags = config.libev_backend | EVFLAG_NOENV;
 
-	loop = ev_default_loop(flags);
+	loop = ev_default_loop(config.libev_flags);
 	if (!loop) {
-		W_ERROR("could not initialize libev (flags=0x%08X)\n", flags);
+		W_ERROR("could not initialize libev (flags=0x%08X)\n",
+			config.libev_flags);
 		return 2;
 	}
 

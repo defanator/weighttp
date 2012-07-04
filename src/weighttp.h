@@ -54,6 +54,7 @@ struct Config {
 	uint8_t keep_alive;
 
 	int libev_backend;
+	int libev_flags;
 
 	char *request;
 	uint32_t request_size;
