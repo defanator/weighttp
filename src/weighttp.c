@@ -26,19 +26,34 @@ static void show_help(void) {
 	printf("example: weighttpd -n 10000 -c 10 -t 2 -k -H \"User-Agent: foo\" localhost/index.html\n\n");
 }
 
-static void print_backends(int b) {
-	if (b & EVBACKEND_SELECT)
-		printf("select ");
-	if (b & EVBACKEND_POLL)
-		printf("poll ");
-	if (b & EVBACKEND_EPOLL)
-		printf("epoll ");
-	if (b & EVBACKEND_KQUEUE)
-		printf("kqueue ");
-	if (b & EVBACKEND_DEVPOLL)
-		printf("devpoll ");
-	if (b & EVBACKEND_PORT)
-		printf("eventport ");
+static void print_backends(int b, int reverse) {
+	if (reverse) {
+		if (b & EVBACKEND_PORT)
+			printf("eventport ");
+		if (b & EVBACKEND_DEVPOLL)
+			printf("devpoll ");
+		if (b & EVBACKEND_KQUEUE)
+			printf("kqueue ");
+		if (b & EVBACKEND_EPOLL)
+			printf("epoll ");
+		if (b & EVBACKEND_POLL)
+			printf("poll ");
+		if (b & EVBACKEND_SELECT)
+			printf("select ");
+	} else {
+		if (b & EVBACKEND_SELECT)
+			printf("select ");
+		if (b & EVBACKEND_POLL)
+			printf("poll ");
+		if (b & EVBACKEND_EPOLL)
+			printf("epoll ");
+		if (b & EVBACKEND_KQUEUE)
+			printf("kqueue ");
+		if (b & EVBACKEND_DEVPOLL)
+			printf("devpoll ");
+		if (b & EVBACKEND_PORT)
+			printf("eventport ");
+	}
 }
 
 static struct addrinfo *resolve_host(char *hostname, uint16_t port, uint8_t use_ipv6) {
@@ -250,9 +265,9 @@ int main(int argc, char *argv[]) {
 					ev_version_major(), ev_version_minor(),
 					EV_VERSION_MAJOR, EV_VERSION_MINOR);
 				printf("            supported backends: ");
-				print_backends(ev_supported_backends());
+				print_backends(ev_supported_backends(), 0);
 				printf("\n            recommended backends: ");
-				print_backends(ev_recommended_backends());
+				print_backends(ev_recommended_backends(), 1);
 				printf("\n\n");
 				return 0;
 			case '6':
