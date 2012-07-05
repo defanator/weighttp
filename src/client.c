@@ -314,7 +314,7 @@ void client_state_machine(Client *client) {
 
 static uint8_t client_parse(Client *client, int size) {
 	char *end, *str;
-	uint16_t status_code;
+	uint16_t status_code = 0;
 
 	switch (client->parser_state) {
 		case PARSER_START:
