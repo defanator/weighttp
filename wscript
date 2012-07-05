@@ -38,6 +38,15 @@ def configure(conf):
 		conf.env['CCFLAGS'] += [ '-I/opt/local/include' ];
 		conf.env['LINKFLAGS'] += [ '-L/opt/local/lib' ];
 
+	elif sys.platform.startswith('sunos'):
+		conf.env['CCFLAGS'] += [ '-I/usr/local/include',
+					 '-I/opt/local/include',
+					 '-I/opt/pkg/include' ];
+		conf.env['LINKFLAGS'] += [ '-L/usr/local/lib',
+					   '-L/opt/local/lib',
+					   '-L/opt/pkg/lib',
+					   '-lrt', '-lsocket' ];
+
 	conf.env['CCFLAGS'] += [
 		'-std=gnu99', '-Wall', '-Wshadow', '-W', '-pedantic', '-g', '-g2', '-O2', '-Wmissing-declarations',
 		'-Wdeclaration-after-statement', '-Wno-pointer-sign', '-Wcast-align', '-Winline', '-Wsign-compare',
