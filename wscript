@@ -30,6 +30,8 @@ def set_options(opt):
 
 
 def configure(conf):
+	conf.check_tool('compiler_cc')
+
 	if sys.platform.startswith('freebsd'):
 		conf.env['CCFLAGS'] += [ '-I/usr/local/include' ];
 		conf.env['LINKFLAGS'] += [ '-L/usr/local/lib' ];
@@ -47,14 +49,16 @@ def configure(conf):
 					   '-L/opt/pkg/lib',
 					   '-lrt', '-lsocket' ];
 
-	conf.env['CCFLAGS'] += [
-		'-std=gnu99', '-Wall', '-Wshadow', '-W', '-pedantic', '-g', '-g2', '-O2', '-Wmissing-declarations',
-		'-Wdeclaration-after-statement', '-Wno-pointer-sign', '-Wcast-align', '-Winline', '-Wsign-compare',
-		'-Wnested-externs', '-Wpointer-arith', '-Wbad-function-cast', '-Wmissing-prototypes',
-		'-fPIC', '-fno-strict-aliasing',
-	]
-
-	conf.check_tool('compiler_cc')
+	if conf.env['CC_NAME'] != 'sun':
+		conf.env['CCFLAGS'] += [
+			'-std=gnu99', '-Wall', '-Wshadow', '-W', '-pedantic',
+			'-g', '-g2', '-O2', '-Wmissing-declarations',
+			'-Wdeclaration-after-statement', '-Wno-pointer-sign',
+			'-Wcast-align', '-Winline', '-Wsign-compare',
+			'-Wnested-externs', '-Wpointer-arith',
+			'-Wbad-function-cast', '-Wmissing-prototypes',
+			'-fPIC', '-fno-strict-aliasing',
+		]
 
 	# check for libev
 	conf.check(lib='ev', uselib_store='ev', mandatory=True)
