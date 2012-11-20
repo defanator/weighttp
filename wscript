@@ -40,6 +40,9 @@ def configure(conf):
 		conf.env['CCFLAGS'] += [ '-I/opt/local/include' ];
 		conf.env['LINKFLAGS'] += [ '-L/opt/local/lib' ];
 
+        elif sys.platform.startswith('linux'):
+                conf.env['CCFLAGS'] += [ '-I/usr/include/libev' ];
+
 	elif sys.platform.startswith('sunos'):
 		conf.env['CCFLAGS'] += [ '-I/usr/local/include',
 					 '-I/opt/local/include',
