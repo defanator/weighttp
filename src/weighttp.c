@@ -23,7 +23,7 @@ static void show_help(void) {
 	printf("  -H str   add header to request\n");
 	printf("  -h       show help and exit\n");
 	printf("  -v       show version, libev info and exit\n\n");
-	printf("example: weighttpd -n 10000 -c 10 -t 2 -k -H \"User-Agent: foo\" localhost/index.html\n\n");
+	printf("example: weighttp -n 10000 -c 10 -t 2 -k -H \"User-Agent: foo\" localhost/index.html\n\n");
 }
 
 static void print_backends(int b, int reverse) {
